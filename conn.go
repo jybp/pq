@@ -335,6 +335,16 @@ func DialOpen(d Dialer, dsn string) (_ driver.Conn, err error) {
 	return c.open(context.Background())
 }
 
+// DialOpenContext opens a new connection to the database using a dialer.
+func DialOpenContext(ctx context.Context, d Dialer, dsn string) (_ driver.Conn, err error) {
+	c, err := NewConnector(dsn)
+	if err != nil {
+		return nil, err
+	}
+	c.dialer = d
+	return c.open(ctx)
+}
+
 func (c *Connector) open(ctx context.Context) (cn *conn, err error) {
 	// Handle any panics during connection initialization.  Note that we
 	// specifically do *not* want to use errRecover(), as that would turn any
